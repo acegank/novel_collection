@@ -1,0 +1,16 @@
+# mysql 配置
+DATABASES = {
+    'NAME': '',
+    'USER': '',
+    'PASSWORD': '',
+    'HOST': '',
+    'POST': ,
+}
+
+# redis配置
+redis = {
+    'HOST': '192.168.99.100',
+    'POST': 6379,
+    'DB': 9,
+    'PASSWORD': ''
+}
