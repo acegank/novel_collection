@@ -126,3 +126,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+.idea/.gitignore
+.idea/deployment.xml
+.idea/inspectionProfiles/
+.idea/markdown-navigator
+.idea/markdown-navigator.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/novel_collection.iml
+.idea/vcs.xml
