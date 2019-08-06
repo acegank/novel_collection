@@ -35,18 +35,17 @@ def run():
             print("小说类型：", value['name'], f'共有页数:{value["page"]}')
 
             # 设置加入队列
-            for ii in range(1, value['page'] + 1):
-                Queue.put(f"{value['href']}index_{ii}.html")
-
-            threads = [pool.apply_async(directory_storage, (Queue.get(), value['name']))
-                       for _ in range(Queue.qsize())]
-
-            for thread in threads:
-                thread.wait()  # 等待线程函数执行完毕
-            pool.close()  # 关闭线程池
-            pool.join()
+            for ii in range(0, value['page']):
+                Queue.put(f"{value['href']}index_{ii + 1}.html")
         # for queues in range(1, queue.qsize + 1)
 
+        threads = [pool.apply_async(directory_storage, (Queue.get(), value['name']))
+                   for _ in range(Queue.qsize())]
+
+        for thread in threads:
+            thread.wait()  # 等待线程函数执行完毕
+        pool.close()  # 关闭线程池
+        pool.join()
     except Exception as _error:
         print('Exception', _error)
 
@@ -57,8 +56,8 @@ def directory_storage(urls, name):
     :param name: 分类
     :return:
     """
+    print(f'正在采集第：{urls}')
     res = qiShuWang.get_books(urls)
-    print(res)
     time.sleep(1)
 
     novel_type = ''
@@ -82,9 +81,10 @@ def directory_storage(urls, name):
                 }
             ]
             model = novels.insert_many(data).execute()
-            print(f"{__value['title']}---{model}")
+            # print(f"{__value['title']}---{model}")
         else:
-            print(f"{__value['title']}---小说已经入库")
+            pass
+            # print(f"{__value['title']}---小说已经入库")
 
 
 if __name__ == '__main__':
