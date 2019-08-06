@@ -17,6 +17,16 @@ lock = threading.Lock()  # 设置一个线程锁
 pool = ThreadPool(THREAD_LIMIT)
 
 
+def get_assort():
+    assort = {}
+    for value in Assort.select():
+        assort.update({value.title: value.id})
+    return assort
+
+
+_assort = get_assort()
+
+
 def run():
     try:
 
@@ -51,37 +61,31 @@ def directory_storage(urls, name):
     print(res)
     time.sleep(1)
 
+    novel_type = ''
+    # 寻找对绑定的一级分类ID
+    for __value in _assort:
+        if name == __value:
+            novel_type = _assort[__value]
+            break
 
-# novel_type = ''
-#             # 寻找对绑定的一级分类ID
-#             for __value in _assort_data.keys():
-#                 if __name == __value:
-#                     novel_type = _assort_data[__value]
-#                     break
-#
-#             for __value in _books:
-#                 # 判断是否已经入库
-#                 chapter = novels.select('*').where(novels.title == __value['title'])
-#
-#                 if chapter.count() <= 0:
-#                     data = [
-#                         {
-#                             'title': __value['title'],
-#                             'desc': __value['simple'],
-#                             'author': __value['author'],
-#                             'novel_type_id': novel_type,
-#                             'url': __value['scr']
-#                         }
-#                     ]
-#                     model = novels.insert_many(data).execute()
-#                     print(f"{__value['title']}---{model}")
-#                 else:
-#                     print(f"{__value['title']}---小说已经入库")
-#
-#             _books = []
-#             if maximum != 'all' and int(maximum) == _i:
-#                 break
+    for __value in res:
+        # 判断是否已经入库
+        chapter = novels.select('*').where(novels.title == __value['title'])
+        if chapter.count() <= 0:
+            data = [
+                {
+                    'title': __value['title'],
+                    'desc': __value['simple'],
+                    'author': __value['author'],
+                    'novel_type_id': novel_type,
+                    'url': __value['scr']
+                }
+            ]
+            model = novels.insert_many(data).execute()
+            print(f"{__value['title']}---{model}")
+        else:
+            print(f"{__value['title']}---小说已经入库")
+
 
 if __name__ == '__main__':
-    print(Assort.select("*"))
-    # run()
+    run()
